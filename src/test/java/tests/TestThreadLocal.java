@@ -27,6 +27,8 @@ public class TestThreadLocal {
 
     @Before
     public void before() {
+
+        //  initialize the thread pool
         for (int i = 0; i < NUMBER_OF_THREADS; i++) {
             Thread thread = new Thread(new MyRunnable());
             thread.setName("thread " + i);
@@ -45,7 +47,7 @@ public class TestThreadLocal {
         // wait for all threadPool to complete
         doneSignal.await();
 
-        // verify shared values do not overlap
+        // verify thread linked resources were not overlapped
         int i = 0;
         for (Thread thread : threadPool) {
             String expected = "thread " + i;
@@ -63,12 +65,12 @@ public class TestThreadLocal {
         @Override
         public void run() {
 
-            SpecificThreadResource specificThreadResource;
+            SpecificThreadResource resource;
 
             // access thread local variable first time
-            specificThreadResource = THREAD_LOCAL_RESOURCE_MANAGER.get();
-            System.out.println(Thread.currentThread().getName() + " thread accessed first time his thread local variable = " + specificThreadResource);
-            specificThreadResource.setData(Thread.currentThread().getName());
+            resource = THREAD_LOCAL_RESOURCE_MANAGER.get();
+            System.out.println(Thread.currentThread().getName() + " thread accessed first time his thread local variable = " + resource);
+            resource.setData(Thread.currentThread().getName());
 
             // do some important work
             try {
@@ -78,9 +80,9 @@ public class TestThreadLocal {
             }
 
             // should access the same thread local variable second time
-            specificThreadResource = THREAD_LOCAL_RESOURCE_MANAGER.get();
-            System.out.println(Thread.currentThread().getName() + " thread accessed second time his thread local variable = " + specificThreadResource);
-            specificThreadResource.setData(specificThreadResource.getData() + Thread.currentThread().getName());
+            resource = THREAD_LOCAL_RESOURCE_MANAGER.get();
+            System.out.println(Thread.currentThread().getName() + " thread accessed second time his thread local variable = " + resource);
+            resource.setData(resource.getData() + Thread.currentThread().getName());
 
             // again do some important work
             try {
@@ -90,11 +92,11 @@ public class TestThreadLocal {
             }
 
             // should access the same thread local variable and now remove it
-            specificThreadResource = THREAD_LOCAL_RESOURCE_MANAGER.get();
-            specificThreadResource.setData(specificThreadResource.getData() + Thread.currentThread().getName());
-            System.out.println("removing thread specific variable for " + Thread.currentThread().getName() + " and variable " + specificThreadResource);
+            resource = THREAD_LOCAL_RESOURCE_MANAGER.get();
+            resource.setData(resource.getData() + Thread.currentThread().getName());
+            System.out.println("removing thread specific variable for " + Thread.currentThread().getName() + " and variable " + resource);
 
-            Thread.currentThread().setName(specificThreadResource.getData());
+            Thread.currentThread().setName(resource.getData());
             THREAD_LOCAL_RESOURCE_MANAGER.remove();
 
             doneSignal.countDown();

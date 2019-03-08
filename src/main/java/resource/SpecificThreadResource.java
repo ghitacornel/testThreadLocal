@@ -1,7 +1,9 @@
 package resource;
 
 /**
- * Highly sensitive THREAD bounded information/resource
+ * Highly sensitive THREAD linked resource<br>
+ * It can be a security context , a transaction context , a database transaction context
+ * or any kind of specific thread resource needed for a certain workflow
  */
 public class SpecificThreadResource {
 
@@ -14,4 +16,5 @@ public class SpecificThreadResource {
     public void setData(String data) {
         this.data = data;
     }
+
 }

@@ -1,6 +1,5 @@
 package tests;
 
-import manager.ResourceManager;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,15 +11,11 @@ import java.util.concurrent.CountDownLatch;
 
 public class TestThreadLocal {
 
-    /**
-     * Usually the container will control the thread local instance
-     */
-    final private static ResourceManager THREAD_LOCAL_RESOURCE_MANAGER = new ResourceManager();
 
     /**
      * Usually the container will control the thread pool
      */
-    final private static int NUMBER_OF_THREADS = 100;
+    final private static int NUMBER_OF_THREADS = 10;
     private List<Thread> threadPool = new ArrayList<>();
 
     final private static CountDownLatch doneSignal = new CountDownLatch(NUMBER_OF_THREADS);
@@ -68,7 +63,7 @@ public class TestThreadLocal {
             Resource resource;
 
             // access thread local variable first time
-            resource = THREAD_LOCAL_RESOURCE_MANAGER.get();
+            resource = ResourceManagerSingleton.getInstance().get();
             System.out.println(Thread.currentThread().getName() + " thread accessed first time his thread local variable = " + resource);
             resource.setData(Thread.currentThread().getName());
 
@@ -80,7 +75,7 @@ public class TestThreadLocal {
             }
 
             // should access the same thread local variable second time
-            resource = THREAD_LOCAL_RESOURCE_MANAGER.get();
+            resource = ResourceManagerSingleton.getInstance().get();
             System.out.println(Thread.currentThread().getName() + " thread accessed second time his thread local variable = " + resource);
             resource.setData(resource.getData() + Thread.currentThread().getName());
 
@@ -92,12 +87,12 @@ public class TestThreadLocal {
             }
 
             // should access the same thread local variable and now remove it
-            resource = THREAD_LOCAL_RESOURCE_MANAGER.get();
+            resource = ResourceManagerSingleton.getInstance().get();
             resource.setData(resource.getData() + Thread.currentThread().getName());
             System.out.println("removing thread specific variable for " + Thread.currentThread().getName() + " and variable " + resource);
 
             Thread.currentThread().setName(resource.getData());
-            THREAD_LOCAL_RESOURCE_MANAGER.remove();
+            ResourceManagerSingleton.getInstance().remove();
 
             doneSignal.countDown();
 

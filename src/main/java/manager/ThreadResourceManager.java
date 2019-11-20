@@ -4,7 +4,7 @@ import resource.SpecificThreadResource;
 
 /**
  * THREAD oriented specific resource MANAGER<br>
- * It is usually designed as a singleton
+ * It is usually designed as a SINGLETON
  */
 public class ThreadResourceManager extends ThreadLocal<SpecificThreadResource> {
 

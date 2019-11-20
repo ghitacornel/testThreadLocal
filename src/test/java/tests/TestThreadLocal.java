@@ -73,24 +73,14 @@ public class TestThreadLocal {
             System.out.println(Thread.currentThread().getName() + " thread accessed first time his thread local variable = " + resource);
             resource.setData(Thread.currentThread().getName());
 
-            // do some important work
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            doSomeImportantWork(100);
 
             // should access the same thread local variable second time
             resource = ResourceManagerSingleton.getInstance().get();
             System.out.println(Thread.currentThread().getName() + " thread accessed second time his thread local variable = " + resource);
             resource.setData(resource.getData() + Thread.currentThread().getName());
 
-            // again do some important work
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            doSomeImportantWork(500);
 
             // should access the same thread local variable and now remove it
             resource = ResourceManagerSingleton.getInstance().get();
@@ -103,6 +93,14 @@ public class TestThreadLocal {
             // XXX , NOT IMPORTANT , for testing purpose notify this latch to "close"
             doneSignal.countDown();
 
+        }
+
+        private void doSomeImportantWork(int i) {
+            try {
+                Thread.sleep(i);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
     }

@@ -4,7 +4,7 @@ import manager.ResourceManager;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import resource.SpecificThreadResource;
+import resource.Resource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,7 +65,7 @@ public class TestThreadLocal {
         @Override
         public void run() {
 
-            SpecificThreadResource resource;
+            Resource resource;
 
             // access thread local variable first time
             resource = THREAD_LOCAL_RESOURCE_MANAGER.get();

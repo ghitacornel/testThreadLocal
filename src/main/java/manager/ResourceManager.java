@@ -5,6 +5,9 @@ import resource.Resource;
 /**
  * THREAD oriented specific resource MANAGER
  * This MANAGER is usually designed as a SINGLETON
+ * <p>
+ * OBSERVE the MAP "behavior" of a ThreadLocal
+ * A ThreadLocal is like a "Map" for which the KEY is always the {@link Thread#currentThread()}
  */
 public class ResourceManager extends ThreadLocal<Resource> {
 

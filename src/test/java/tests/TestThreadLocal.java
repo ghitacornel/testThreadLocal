@@ -11,13 +11,14 @@ import java.util.concurrent.CountDownLatch;
 
 public class TestThreadLocal {
 
-
     /**
      * Usually the container will control the thread pool
      */
     final private static int NUMBER_OF_THREADS = 10;
     private List<Thread> threadPool = new ArrayList<>();
 
+    // used for testing purpose
+    // ensure all threads are done when exiting
     final private static CountDownLatch doneSignal = new CountDownLatch(NUMBER_OF_THREADS);
 
     @Before

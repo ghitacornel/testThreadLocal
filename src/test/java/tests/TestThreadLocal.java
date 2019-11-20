@@ -1,6 +1,6 @@
 package tests;
 
-import manager.ThreadResourceManager;
+import manager.ResourceManager;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,7 +15,7 @@ public class TestThreadLocal {
     /**
      * Usually the container will control the thread local instance
      */
-    final private static ThreadResourceManager THREAD_LOCAL_RESOURCE_MANAGER = new ThreadResourceManager();
+    final private static ResourceManager THREAD_LOCAL_RESOURCE_MANAGER = new ResourceManager();
 
     /**
      * Usually the container will control the thread pool

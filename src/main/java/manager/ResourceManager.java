@@ -8,6 +8,12 @@ import resource.Resource;
  * <p>
  * OBSERVE the MAP "behavior" of a ThreadLocal
  * A ThreadLocal is like a "Map" for which the KEY is always the {@link Thread#currentThread()}
+ * <p>
+ * OBSERVE the "cache" approach through the usage of java.lang.ref.WeakReference under the hood (java.lang.ThreadLocal.ThreadLocalMap)
+ *
+ * @see ThreadLocal#get()
+ * @see ThreadLocal#set(Object)
+ * @see ThreadLocal#remove()
  */
 public class ResourceManager extends ThreadLocal<Resource> {
 

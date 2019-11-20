@@ -54,6 +54,10 @@ public class TestThreadLocal {
 
     /**
      * My CUSTOM code goes here
+     * This code is executed by multiple {@link Thread}
+     * Each {@link Thread} will use its own {@link Resource}
+     * No {@link Resource} usage overlap is allowed
+     * The {@link ResourceManagerSingleton} ensure {@link Resource} overlap does not happen
      */
     final private static class MyRunnable implements Runnable {
 

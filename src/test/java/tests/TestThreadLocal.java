@@ -59,6 +59,7 @@ public class TestThreadLocal {
      * Each {@link Thread} will use its own {@link Resource}
      * No {@link Resource} usage overlap is allowed
      * The {@link ResourceManagerSingleton} ensure {@link Resource} overlap does not happen
+     * OBSERVE the code, the code looks like no "thread" stuff is used under the hood except access to the current thread for logging
      */
     final private static class MyRunnable implements Runnable {
 
@@ -99,6 +100,7 @@ public class TestThreadLocal {
             Thread.currentThread().setName(resource.getData());
             ResourceManagerSingleton.getInstance().remove();
 
+            // XXX , NOT IMPORTANT , for testing purpose notify this latch to "close"
             doneSignal.countDown();
 
         }

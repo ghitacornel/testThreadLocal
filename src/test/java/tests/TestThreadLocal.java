@@ -1,10 +1,9 @@
 package tests;
 
-import manager.ThreadResourceManager;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import resource.SpecificThreadResource;
+import resource.Resource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,16 +12,13 @@ import java.util.concurrent.CountDownLatch;
 public class TestThreadLocal {
 
     /**
-     * Usually the container will control the thread local instance
-     */
-    final private static ThreadResourceManager THREAD_LOCAL_RESOURCE_MANAGER = new ThreadResourceManager();
-
-    /**
      * Usually the container will control the thread pool
      */
-    final private static int NUMBER_OF_THREADS = 100;
+    final private static int NUMBER_OF_THREADS = 10;
     private List<Thread> threadPool = new ArrayList<>();
 
+    // used for testing purpose
+    // ensure all threads are done when exiting
     final private static CountDownLatch doneSignal = new CountDownLatch(NUMBER_OF_THREADS);
 
     @Before
@@ -59,48 +55,52 @@ public class TestThreadLocal {
 
     /**
      * My CUSTOM code goes here
+     * This code is executed by multiple {@link Thread}
+     * Each {@link Thread} will use its own {@link Resource}
+     * No {@link Resource} usage overlap is allowed
+     * The {@link ResourceManagerSingleton} ensure {@link Resource} overlap does not happen
+     * OBSERVE the code, the code looks like no "thread" stuff is used under the hood except access to the current thread for logging
      */
     final private static class MyRunnable implements Runnable {
 
         @Override
         public void run() {
 
-            SpecificThreadResource resource;
+            Resource resource;
 
             // access thread local variable first time
-            resource = THREAD_LOCAL_RESOURCE_MANAGER.get();
+            resource = ResourceManagerSingleton.getInstance().get();
             System.out.println(Thread.currentThread().getName() + " thread accessed first time his thread local variable = " + resource);
             resource.setData(Thread.currentThread().getName());
 
-            // do some important work
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            doSomeImportantWork(100);
 
             // should access the same thread local variable second time
-            resource = THREAD_LOCAL_RESOURCE_MANAGER.get();
+            resource = ResourceManagerSingleton.getInstance().get();
             System.out.println(Thread.currentThread().getName() + " thread accessed second time his thread local variable = " + resource);
             resource.setData(resource.getData() + Thread.currentThread().getName());
 
-            // again do some important work
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            doSomeImportantWork(500);
 
             // should access the same thread local variable and now remove it
-            resource = THREAD_LOCAL_RESOURCE_MANAGER.get();
+            resource = ResourceManagerSingleton.getInstance().get();
             resource.setData(resource.getData() + Thread.currentThread().getName());
             System.out.println("removing thread specific variable for " + Thread.currentThread().getName() + " and variable " + resource);
 
             Thread.currentThread().setName(resource.getData());
-            THREAD_LOCAL_RESOURCE_MANAGER.remove();
+            ResourceManagerSingleton.getInstance().remove();
 
+            // XXX , NOT IMPORTANT , for testing purpose notify this latch to "close"
             doneSignal.countDown();
 
+        }
+
+        private void doSomeImportantWork(int i) {
+            try {
+                Thread.sleep(i);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
     }

@@ -1,8 +1,8 @@
 package tests;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import resource.Resource;
 
 import java.util.ArrayList;
@@ -15,13 +15,13 @@ public class TestThreadLocal {
      * Usually the container will control the thread pool
      */
     final private static int NUMBER_OF_THREADS = 10;
-    private List<Thread> threadPool = new ArrayList<>();
+    private final List<Thread> threadPool = new ArrayList<>();
 
     // used for testing purpose
     // ensure all threads are done when exiting
     final private static CountDownLatch doneSignal = new CountDownLatch(NUMBER_OF_THREADS);
 
-    @Before
+    @BeforeEach
     public void before() {
 
         //  initialize the thread pool
@@ -47,7 +47,7 @@ public class TestThreadLocal {
         int i = 0;
         for (Thread thread : threadPool) {
             String expected = "thread " + i;
-            Assert.assertEquals(expected + expected + expected, thread.getName());
+            Assertions.assertEquals(expected + expected + expected, thread.getName());
             i++;
         }
 
